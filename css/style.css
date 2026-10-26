@@ -32,8 +32,8 @@
   --font-sans: 'Montserrat', system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
 
   /* Espaciados y Layout */
-  --container-max: 1360px;
-  --container-narrow: 980px;
+  --container-max: 1200px;
+  --container-narrow: 840px;
   --header-height: 80px;
   --section-pad: clamp(4.5rem, 8vw, 7.5rem);
   --radius-sm: 4px;
@@ -64,6 +64,8 @@ html {
   color: var(--text-primary);
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
+  overflow-x: hidden;
+  max-width: 100vw;
 }
 
 body {
@@ -74,6 +76,10 @@ body {
   color: var(--text-primary);
   overflow-x: hidden;
   position: relative;
+  width: 100%;
+  max-width: 100vw;
+  margin: 0;
+  padding: 0;
   background-image: 
     radial-gradient(circle at 50% 0%, rgba(201, 162, 75, 0.07) 0%, transparent 60%),
     radial-gradient(circle at 10% 30%, rgba(122, 90, 44, 0.04) 0%, transparent 50%);
@@ -188,21 +194,29 @@ p {
    4. LAYOUT & ELEMENTOS ESTRUCTURALES
    -------------------------------------------------------------------------- */
 .container {
-  width: min(94%, var(--container-max));
-  margin-inline: auto;
+  width: min(92%, var(--container-max));
+  margin-left: auto !important;
+  margin-right: auto !important;
+  box-sizing: border-box;
 }
 
 .container-narrow {
-  width: min(94%, var(--container-narrow));
-  margin-inline: auto;
+  width: min(92%, var(--container-narrow));
+  margin-left: auto !important;
+  margin-right: auto !important;
+  box-sizing: border-box;
 }
 
 @media (max-width: 768px) {
   .container {
-    width: min(96%, var(--container-max));
+    width: min(92%, var(--container-max));
+    margin-left: auto !important;
+    margin-right: auto !important;
   }
   .container-narrow {
-    width: min(96%, var(--container-narrow));
+    width: min(92%, var(--container-narrow));
+    margin-left: auto !important;
+    margin-right: auto !important;
   }
 }
 
@@ -2313,14 +2327,35 @@ p {
   display: none !important;
 }
 
-@media (max-width: 1080px) {
+@media (max-width: 992px) {
   .contact-layout-grid {
     grid-template-columns: 1fr;
     gap: 2rem;
+    width: 100%;
+    margin-left: auto !important;
+    margin-right: auto !important;
+  }
+
+  .contact-info-cards {
+    width: 100%;
+    max-width: 580px;
+    margin-left: auto !important;
+    margin-right: auto !important;
+  }
+
+  .reservation-form-card {
+    width: 100%;
+    max-width: 580px;
+    margin-left: auto !important;
+    margin-right: auto !important;
   }
 
   .contact-channel-card {
-    padding: 1.5rem 1.35rem;
+    width: 100%;
+    margin-left: auto !important;
+    margin-right: auto !important;
+    padding: 1.5rem 1.25rem;
+    box-sizing: border-box;
   }
 }
 
@@ -2342,13 +2377,19 @@ p {
   }
 
   .contact-info-cards {
-    gap: 1rem;
+    gap: 1.15rem;
     width: 100%;
+    max-width: 100%;
+    margin-left: auto !important;
+    margin-right: auto !important;
   }
 
   .contact-channel-card {
     width: 100%;
-    padding: 1.35rem 1.2rem;
+    padding: 1.35rem 1.15rem;
+    margin-left: auto !important;
+    margin-right: auto !important;
+    box-sizing: border-box;
   }
 
   .channel-card-header {
@@ -2357,8 +2398,8 @@ p {
   }
 
   .channel-icon-circle {
-    width: 42px;
-    height: 42px;
+    width: 44px;
+    height: 44px;
   }
 
   .channel-icon-circle svg {
@@ -2376,8 +2417,8 @@ p {
   }
 
   .channel-value {
-    font-size: 1.2rem;
-    margin-bottom: 0.95rem;
+    font-size: 1.25rem;
+    margin-bottom: 1rem;
   }
 }
 
@@ -2393,6 +2434,7 @@ p {
     line-height: 1.2;
     white-space: nowrap;
     width: 100%;
+    box-sizing: border-box;
   }
 
   .contact-channel-card .btn svg {
