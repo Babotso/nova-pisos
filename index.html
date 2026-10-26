@@ -2,7 +2,7 @@
 <html lang="es">
 <head>
   <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
   <title>Nova Pisos | Pulido y Abrillantado de Pisos en Monterrey</title>
   <meta name="description" content="Servicio profesional de pulido, desbastado, abrillantado y encerado de pisos en Monterrey y área metropolitana. Mármol, granito, concreto y terrazo. Cotiza en menos de 10 min por WhatsApp.">
   <meta name="keywords" content="pulido de pisos Monterrey, abrillantado de mármol, desbastado de concreto, pulido industrial Monterrey, San Pedro Garza García, Nova Pisos">
@@ -155,7 +155,7 @@
                 <span class="stat-label">Acabado Espejo</span>
               </div>
               <div class="stat-counter-card">
-                <span class="stat-number" data-target="10" data-prefix="< " data-suffix=" min">0</span>
+                <span class="stat-number" data-target="10" data-prefix="< " data-suffix=" min">&lt; 10 min</span>
                 <span class="stat-label">Cotización Rápida</span>
               </div>
             </div>
@@ -521,7 +521,8 @@
               <img src="images/comparativa-antes.jpg" alt="Piso de mármol opaco y rayado antes del pulido profesional" draggable="false">
               <div class="status-tag tag-before">
                 <span class="tag-icon">✕</span>
-                <span>ANTES: Opaco & Rayado</span>
+                <span class="tag-main">ANTES</span>
+                <span class="tag-desc">: Opaco &amp; Rayado</span>
               </div>
             </div>
 
@@ -530,7 +531,8 @@
               <img src="images/comparativa-despues.jpg" alt="Piso de mármol con acabado espejo pulido por Nova Pisos" draggable="false">
               <div class="status-tag tag-after">
                 <span class="tag-icon">✓</span>
-                <span>DESPUÉS: Acabado Espejo Nova Pisos</span>
+                <span class="tag-main">DESPUÉS</span>
+                <span class="tag-desc">: Acabado Espejo</span>
               </div>
             </div>
 
@@ -1080,12 +1082,12 @@
             // Ease out cubic
             const ease = 1 - Math.pow(1 - progress, 3);
             const current = Math.floor(ease * target);
-            el.textContent = `${prefix}${current}${suffix}`;
+            el.textContent = `${prefix}${current}${suffix}`.replace(/ /g, '\u00A0');
 
             if (progress < 1) {
               requestAnimationFrame(update);
             } else {
-              el.textContent = `${prefix}${target}${suffix}`;
+              el.textContent = `${prefix}${target}${suffix}`.replace(/ /g, '\u00A0');
             }
           }
           requestAnimationFrame(update);
