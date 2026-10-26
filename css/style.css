@@ -2389,8 +2389,20 @@ p {
 
 .form-row-2 {
   display: grid;
-  grid-template-columns: 1fr 1fr;
+  grid-template-columns: minmax(0, 1fr) minmax(0, 1fr);
   gap: 1rem;
+}
+
+/* Evita que el texto largo de los selects ensanche la columna y salga del marco */
+.form-row-2 > .form-group,
+.form-group,
+.form-select-wrapper {
+  min-width: 0;
+  max-width: 100%;
+}
+
+.form-select-wrapper .form-select-display {
+  max-width: 100%;
 }
 
 .form-submit-btn {
@@ -2552,7 +2564,7 @@ p {
 
 @media (max-width: 600px) {
   .form-row-2 {
-    grid-template-columns: 1fr;
+    grid-template-columns: minmax(0, 1fr);
   }
 
   .contact-channel-card .btn {
