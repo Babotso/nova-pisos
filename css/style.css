@@ -2184,8 +2184,8 @@ p {
 }
 
 .channel-icon-circle {
-  width: 48px;
-  height: 48px;
+  width: 42px;
+  height: 42px;
   border-radius: 50%;
   background: rgba(201, 162, 75, 0.12);
   border: 1px solid var(--gold-border);
@@ -2197,8 +2197,14 @@ p {
 }
 
 .channel-icon-circle svg {
-  width: 24px;
-  height: 24px;
+  width: 20px;
+  height: 20px;
+}
+
+/* Seguro: ningún icono de la página de contacto puede crecer de más */
+.page-contactos main svg {
+  max-width: 24px;
+  max-height: 24px;
 }
 
 .channel-icon-circle.whatsapp-circle {
