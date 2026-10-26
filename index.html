@@ -39,8 +39,8 @@
   <link href="https://fonts.googleapis.com/css2?family=Montserrat:ital,wght@0,300;0,400;0,500;0,600;0,700;0,800;0,900;1,400;1,600;1,700&display=swap" rel="stylesheet">
 
   <!-- Estilos Principales -->
-  <link rel="stylesheet" href="css/style.css?v=6.0">
-  <link rel="stylesheet" href="css/interactions.css?v=6.0">
+  <link rel="stylesheet" href="css/style.css?v=7.0">
+  <link rel="stylesheet" href="css/interactions.css?v=7.0">
   <link rel="preload" as="image" href="images/operador-comercial-uniforme.webp" type="image/webp">
 </head>
 <body>
@@ -1026,6 +1026,8 @@
       const comparisonSlider = document.getElementById('before-after-slider');
       const afterBox = document.getElementById('after-box');
       const sliderDivider = document.getElementById('slider-divider');
+      const tagBefore = comparisonSlider ? comparisonSlider.querySelector('.tag-before') : null;
+      const tagAfter = comparisonSlider ? comparisonSlider.querySelector('.tag-after') : null;
 
       if (comparisonSlider && afterBox && sliderDivider) {
         let isSliding = false;
@@ -1033,11 +1035,40 @@
         function updateSlider(clientX) {
           const rect = comparisonSlider.getBoundingClientRect();
           let percent = ((clientX - rect.left) / rect.width) * 100;
-          if (percent < 2) percent = 2;
-          if (percent > 98) percent = 98;
+          if (percent < 0) percent = 0;
+          if (percent > 100) percent = 100;
+
           afterBox.style.clipPath = `polygon(${percent}% 0, 100% 0, 100% 100%, ${percent}% 100%)`;
           sliderDivider.style.left = `${percent}%`;
           sliderDivider.querySelector('.divider-handle')?.setAttribute('aria-valuenow', Math.round(percent));
+
+          // Desvanecer la etiqueta ANTES al deslizar hacia la izquierda (revelando sección DESPUÉS)
+          if (tagBefore) {
+            if (percent <= 12) {
+              tagBefore.style.opacity = '0';
+              tagBefore.style.pointerEvents = 'none';
+            } else if (percent < 32) {
+              tagBefore.style.opacity = String((percent - 12) / 20);
+              tagBefore.style.pointerEvents = 'none';
+            } else {
+              tagBefore.style.opacity = '1';
+              tagBefore.style.pointerEvents = '';
+            }
+          }
+
+          // Desvanecer la etiqueta DESPUÉS al deslizar hacia la derecha (revelando sección ANTES)
+          if (tagAfter) {
+            if (percent >= 88) {
+              tagAfter.style.opacity = '0';
+              tagAfter.style.pointerEvents = 'none';
+            } else if (percent > 68) {
+              tagAfter.style.opacity = String((88 - percent) / 20);
+              tagAfter.style.pointerEvents = 'none';
+            } else {
+              tagAfter.style.opacity = '1';
+              tagAfter.style.pointerEvents = '';
+            }
+          }
         }
 
         comparisonSlider.addEventListener('pointerdown', function (e) {
