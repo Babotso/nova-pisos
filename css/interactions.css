@@ -1,0 +1,514 @@
+/* ==========================================================================
+   NOVA PISOS - CAPA DE INTERACCIONES Y ANIMACIONES AVANZADAS
+   Se carga después de style.css. Todo lo que depende de JS está bajo `.js`
+   para que el sitio siga viéndose bien si el script no carga.
+   ========================================================================== */
+
+/* --------------------------------------------------------------------------
+   1. BARRA DE PROGRESO DE SCROLL
+   -------------------------------------------------------------------------- */
+.scroll-progress {
+  position: fixed;
+  top: 0;
+  left: 0;
+  height: 3px;
+  width: 100%;
+  transform-origin: 0 50%;
+  transform: scaleX(var(--scroll, 0));
+  background: linear-gradient(90deg, var(--gold-deep), var(--gold-light) 60%, #fff6d8);
+  box-shadow: 0 0 12px rgba(228, 195, 116, 0.65);
+  z-index: 2000;
+  pointer-events: none;
+}
+
+/* --------------------------------------------------------------------------
+   2. CARGA SUAVE DE IMÁGENES (blur-up + shimmer dorado)
+   -------------------------------------------------------------------------- */
+.js .service-visual,
+.js .gallery-item,
+.js .hero-image-box {
+  background-image: linear-gradient(110deg, #14120e 30%, #241f16 50%, #14120e 70%);
+  background-size: 250% 100%;
+  animation: npShimmer 1.6s linear infinite;
+}
+
+.js .service-visual.img-ready,
+.js .gallery-item.img-ready,
+.js .hero-image-box.img-ready {
+  animation: none;
+  background-image: none;
+}
+
+@keyframes npShimmer {
+  from { background-position: 120% 0; }
+  to   { background-position: -120% 0; }
+}
+
+.js .service-visual img,
+.js .gallery-item img,
+.js .hero-image-box img {
+  opacity: 0;
+  filter: blur(14px) saturate(0.6);
+  transition:
+    opacity 0.9s ease,
+    filter 1.1s cubic-bezier(0.16, 1, 0.3, 1),
+    transform 0.65s cubic-bezier(0.16, 1, 0.3, 1);
+}
+
+.js .service-visual img.is-loaded,
+.js .gallery-item img.is-loaded,
+.js .hero-image-box img.is-loaded {
+  opacity: 1;
+  filter: none;
+}
+
+/* --------------------------------------------------------------------------
+   3. PARALLAX EN FOTOS (usa la propiedad `translate`, compatible con el
+      `transform: scale()` del hover existente)
+   -------------------------------------------------------------------------- */
+.js .service-visual img,
+.js .hero-image-box img {
+  translate: 0 var(--py, 0px);
+  scale: 1.12;
+}
+
+/* --------------------------------------------------------------------------
+   4. REVELADO TIPO "CORTINA" DE LAS FOTOS DE SERVICIOS
+   -------------------------------------------------------------------------- */
+.js .service-visual {
+  clip-path: inset(0 0 100% 0 round var(--radius-md));
+  transition: clip-path 1.2s cubic-bezier(0.77, 0, 0.18, 1);
+}
+
+.js .service-row.reverse .service-visual {
+  clip-path: inset(100% 0 0 0 round var(--radius-md));
+}
+
+.js .service-visual.is-wiped,
+.js .service-row.reverse .service-visual.is-wiped {
+  clip-path: inset(0 0 0 0 round var(--radius-md));
+}
+
+/* --------------------------------------------------------------------------
+   5. DESTELLO ESPECULAR ("brillo de piso pulido") AL PASAR / AL REVELAR
+   -------------------------------------------------------------------------- */
+.service-visual::after,
+.gallery-item::after,
+.hero-image-box::after {
+  content: '';
+  position: absolute;
+  inset: -20% auto -20% -60%;
+  width: 45%;
+  background: linear-gradient(100deg,
+      transparent 0%,
+      rgba(255, 246, 216, 0.0) 30%,
+      rgba(255, 246, 216, 0.38) 50%,
+      rgba(255, 246, 216, 0.0) 70%,
+      transparent 100%);
+  transform: skewX(-18deg) translateX(0);
+  pointer-events: none;
+  z-index: 3;
+  opacity: 0;
+}
+
+.service-visual.shine::after,
+.gallery-item.shine::after,
+.hero-image-box.shine::after,
+.service-row:hover .service-visual::after,
+.gallery-item:hover::after,
+.hero-mirror-stage:hover .hero-image-box::after {
+  animation: npShine 1.15s cubic-bezier(0.4, 0, 0.2, 1) forwards;
+}
+
+@keyframes npShine {
+  0%   { opacity: 0; transform: skewX(-18deg) translateX(0); }
+  15%  { opacity: 1; }
+  100% { opacity: 0; transform: skewX(-18deg) translateX(420%); }
+}
+
+/* Destello periódico en el hero para que se sienta "vivo" */
+.js .hero-image-box.shine-loop::after {
+  animation: npShine 1.4s cubic-bezier(0.4, 0, 0.2, 1) 1.2s infinite;
+  animation-delay: 1.5s;
+  animation-duration: 6s;
+}
+
+/* --------------------------------------------------------------------------
+   6. SPOTLIGHT DORADO QUE SIGUE AL CURSOR / DEDO
+   -------------------------------------------------------------------------- */
+.service-row,
+.process-step,
+.value-card,
+.stat-counter-card {
+  --mx: 50%;
+  --my: 50%;
+}
+
+.service-row::before,
+.process-step::before {
+  content: '';
+  position: absolute;
+  inset: 0;
+  border-radius: inherit;
+  background: radial-gradient(420px circle at var(--mx) var(--my),
+      rgba(228, 195, 116, 0.10),
+      transparent 45%);
+  opacity: 0;
+  transition: opacity 0.4s ease;
+  pointer-events: none;
+  z-index: 0;
+}
+
+.service-row:hover::before,
+.process-step:hover::before,
+.service-row.touch-glow::before,
+.process-step.touch-glow::before {
+  opacity: 1;
+}
+
+.process-step {
+  position: relative;
+}
+
+.service-row > *,
+.process-step > * {
+  position: relative;
+  z-index: 1;
+}
+
+/* --------------------------------------------------------------------------
+   7. BOTONES MAGNÉTICOS (desktop)
+   -------------------------------------------------------------------------- */
+.btn.is-magnetic {
+  transition: transform 0.25s cubic-bezier(0.16, 1, 0.3, 1), box-shadow var(--transition-normal), background var(--transition-normal);
+  will-change: transform;
+}
+
+.btn-primary {
+  position: relative;
+  overflow: hidden;
+  isolation: isolate;
+}
+
+.btn-primary::before {
+  content: '';
+  position: absolute;
+  inset: 0;
+  background: linear-gradient(110deg, transparent 25%, rgba(255, 255, 255, 0.45) 50%, transparent 75%);
+  transform: translateX(-120%);
+  transition: transform 0.8s cubic-bezier(0.16, 1, 0.3, 1);
+  z-index: -1;
+}
+
+.btn-primary:hover::before {
+  transform: translateX(120%);
+}
+
+/* --------------------------------------------------------------------------
+   8. HERO: TÍTULO CON BRILLO DORADO ANIMADO Y PARTÍCULAS
+   -------------------------------------------------------------------------- */
+.hero-title {
+  background: linear-gradient(100deg,
+      var(--text-primary) 0%,
+      var(--text-primary) 40%,
+      var(--gold-light) 50%,
+      var(--text-primary) 60%,
+      var(--text-primary) 100%);
+  background-size: 250% 100%;
+  -webkit-background-clip: text;
+  background-clip: text;
+  -webkit-text-fill-color: transparent;
+  animation: npTitleShine 6s ease-in-out 1s infinite;
+}
+
+@keyframes npTitleShine {
+  0%, 30% { background-position: 100% 0; }
+  70%, 100% { background-position: 0% 0; }
+}
+
+.hero-sparkles {
+  position: absolute;
+  inset: 0;
+  pointer-events: none;
+  z-index: 2;
+  overflow: hidden;
+}
+
+.hero-sparkles span {
+  position: absolute;
+  width: 4px;
+  height: 4px;
+  border-radius: 50%;
+  background: #fff3cf;
+  box-shadow: 0 0 10px 2px rgba(228, 195, 116, 0.85);
+  opacity: 0;
+  animation: npSparkle var(--d, 4s) ease-in-out var(--delay, 0s) infinite;
+}
+
+@keyframes npSparkle {
+  0%   { opacity: 0; transform: translateY(0) scale(0.4); }
+  20%  { opacity: 1; transform: translateY(-8px) scale(1); }
+  60%  { opacity: 0.6; }
+  100% { opacity: 0; transform: translateY(-46px) scale(0.3); }
+}
+
+/* --------------------------------------------------------------------------
+   9. GALERÍA: ENTRADA ESCALONADA CON GIRO 3D
+   -------------------------------------------------------------------------- */
+.js .gallery-grid .gallery-item.reveal-init {
+  transform: perspective(900px) translateY(50px) rotateX(12deg) scale(0.96);
+}
+
+.js .gallery-grid .gallery-item.reveal-init.is-revealed {
+  transform: none;
+}
+
+/* --------------------------------------------------------------------------
+   10. LIGHTBOX: TRANSICIÓN ENTRE FOTOS + ZOOM AL TOCAR
+   -------------------------------------------------------------------------- */
+.lightbox-img {
+  transition: opacity 0.35s ease, transform 0.45s cubic-bezier(0.16, 1, 0.3, 1);
+  cursor: zoom-in;
+  touch-action: pan-y;
+}
+
+.lightbox-img.is-switching {
+  opacity: 0;
+  transform: scale(0.96);
+}
+
+.lightbox-img.is-zoomed {
+  transform: scale(2);
+  cursor: zoom-out;
+  touch-action: none;
+}
+
+.lightbox-hint {
+  position: absolute;
+  top: 1rem;
+  left: 50%;
+  transform: translateX(-50%);
+  padding: 0.35rem 0.85rem;
+  border-radius: 999px;
+  background: rgba(11, 10, 8, 0.75);
+  border: 1px solid var(--gold-border);
+  color: var(--gold-light);
+  font-size: 0.72rem;
+  letter-spacing: 0.06em;
+  pointer-events: none;
+  z-index: 5;
+  animation: npFadeOut 3.5s ease 1.5s forwards;
+}
+
+@keyframes npFadeOut {
+  to { opacity: 0; }
+}
+
+/* --------------------------------------------------------------------------
+   11. BOTÓN "VOLVER ARRIBA" CON ANILLO DE PROGRESO
+   -------------------------------------------------------------------------- */
+.back-to-top {
+  position: fixed;
+  left: 1.5rem;
+  bottom: 1.5rem;
+  width: 52px;
+  height: 52px;
+  border-radius: 50%;
+  border: 1px solid var(--gold-border);
+  background: rgba(18, 17, 14, 0.85);
+  backdrop-filter: blur(10px);
+  -webkit-backdrop-filter: blur(10px);
+  color: var(--gold-light);
+  display: grid;
+  place-items: center;
+  cursor: pointer;
+  z-index: 900;
+  opacity: 0;
+  transform: translateY(20px) scale(0.8);
+  pointer-events: none;
+  transition: opacity 0.35s ease, transform 0.45s cubic-bezier(0.16, 1, 0.3, 1), border-color 0.3s;
+}
+
+.back-to-top.visible {
+  opacity: 1;
+  transform: none;
+  pointer-events: auto;
+}
+
+.back-to-top:hover {
+  border-color: var(--gold-light);
+  transform: translateY(-3px);
+}
+
+.back-to-top svg.arrow {
+  width: 20px;
+  height: 20px;
+  position: relative;
+  z-index: 1;
+}
+
+.back-to-top svg.ring {
+  position: absolute;
+  inset: -1px;
+  width: calc(100% + 2px);
+  height: calc(100% + 2px);
+  transform: rotate(-90deg);
+}
+
+.back-to-top svg.ring circle {
+  fill: none;
+  stroke: var(--gold-light);
+  stroke-width: 2;
+  stroke-linecap: round;
+  stroke-dasharray: 157;
+  stroke-dashoffset: calc(157 - 157 * var(--scroll, 0));
+}
+
+/* --------------------------------------------------------------------------
+   12. MÓVIL: MENÚ A PANTALLA COMPLETA, HAMBURGUESA ANIMADA, GALERÍA SWIPE
+   -------------------------------------------------------------------------- */
+.mobile-toggle svg line {
+  transform-box: fill-box;
+  transform-origin: center;
+  transition: transform 0.4s cubic-bezier(0.16, 1, 0.3, 1), opacity 0.25s ease;
+}
+
+.mobile-toggle[aria-expanded="true"] svg line:nth-child(1) { opacity: 0; transform: scaleX(0); }
+.mobile-toggle[aria-expanded="true"] svg line:nth-child(2) { transform: translateY(6px) rotate(45deg); }
+.mobile-toggle[aria-expanded="true"] svg line:nth-child(3) { transform: translateY(-6px) rotate(-45deg); }
+
+.gallery-dots {
+  display: none;
+}
+
+@media (max-width: 768px) {
+  .site-nav {
+    display: flex;
+    bottom: 0;
+    height: calc(100dvh - var(--header-height));
+    padding: 2.5rem 1.75rem;
+    justify-content: flex-start;
+    background:
+      radial-gradient(circle at 85% 0%, rgba(201, 162, 75, 0.18), transparent 55%),
+      rgba(11, 10, 8, 0.94);
+    backdrop-filter: blur(18px);
+    -webkit-backdrop-filter: blur(18px);
+    clip-path: circle(0% at calc(100% - 2.5rem) 0%);
+    visibility: hidden;
+    transition: clip-path 0.65s cubic-bezier(0.77, 0, 0.18, 1), visibility 0s linear 0.65s;
+  }
+
+  .site-nav.active {
+    clip-path: circle(150% at calc(100% - 2.5rem) 0%);
+    visibility: visible;
+    transition: clip-path 0.7s cubic-bezier(0.77, 0, 0.18, 1), visibility 0s;
+  }
+
+  .site-nav .nav-list {
+    gap: 0.4rem;
+  }
+
+  .site-nav .nav-list li {
+    width: 100%;
+    opacity: 0;
+    transform: translateX(-30px);
+    transition: opacity 0.4s ease, transform 0.5s cubic-bezier(0.16, 1, 0.3, 1);
+  }
+
+  .site-nav.active .nav-list li {
+    opacity: 1;
+    transform: none;
+  }
+
+  .site-nav.active .nav-list li:nth-child(1) { transition-delay: 0.15s; }
+  .site-nav.active .nav-list li:nth-child(2) { transition-delay: 0.22s; }
+  .site-nav.active .nav-list li:nth-child(3) { transition-delay: 0.29s; }
+  .site-nav.active .nav-list li:nth-child(4) { transition-delay: 0.36s; }
+  .site-nav.active .nav-list li:nth-child(5) { transition-delay: 0.43s; }
+
+  .site-nav .nav-link {
+    display: block;
+    font-size: 1.65rem;
+    font-weight: 700;
+    padding: 0.9rem 0;
+    border-bottom: 1px solid var(--gold-border-subtle);
+  }
+
+  body.menu-open {
+    overflow: hidden;
+  }
+
+  /* Galería con desplazamiento vertical libre arriba y abajo */
+  .js .gallery-grid {
+    display: grid;
+    grid-template-columns: 1fr;
+    gap: 1.25rem;
+    padding: 0;
+    margin-inline: 0;
+    overflow: visible;
+  }
+
+  .js .gallery-grid .gallery-item {
+    flex: unset;
+    width: 100%;
+    aspect-ratio: 4 / 3;
+    opacity: 1 !important;
+    transform: none !important;
+  }
+
+  .js .gallery-dots {
+    display: none;
+  }
+
+  .gallery-dots button {
+    width: 8px;
+    height: 8px;
+    border-radius: 999px;
+    border: none;
+    padding: 0;
+    background: rgba(201, 162, 75, 0.3);
+    transition: width 0.4s cubic-bezier(0.16, 1, 0.3, 1), background 0.3s;
+    cursor: pointer;
+  }
+
+  .gallery-dots button.active {
+    width: 26px;
+    background: var(--gold-light);
+  }
+
+  .back-to-top {
+    width: 46px;
+    height: 46px;
+    left: 1rem;
+    bottom: 1.5rem;
+  }
+
+  .js .service-visual img,
+  .js .hero-image-box img {
+    scale: 1.08;
+  }
+}
+
+/* --------------------------------------------------------------------------
+   13. ACCESIBILIDAD: SIN MOVIMIENTO SI EL USUARIO LO PREFIERE
+   -------------------------------------------------------------------------- */
+@media (prefers-reduced-motion: reduce) {
+  .js .service-visual,
+  .js .service-row.reverse .service-visual {
+    clip-path: none;
+  }
+
+  .js .service-visual img,
+  .js .hero-image-box img {
+    translate: none;
+    scale: 1;
+  }
+
+  .hero-title {
+    animation: none;
+  }
+
+  .hero-sparkles {
+    display: none;
+  }
+}
